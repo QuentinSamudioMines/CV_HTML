@@ -27,6 +27,7 @@
     return {
       infos: infos,
       tagline: cvData.tagline,
+      sectionTitles: cvData.sectionTitles,
       experiences: cvData.experiences,
       competences: cvData.competences,
       langues: cvData.langues,
@@ -39,6 +40,21 @@
 
   function applyState(state) {
     if (!state) return;
+    // Initialisation des titres par défaut (français)
+    if (!cvData.sectionTitles) {
+      cvData.sectionTitles = {
+        skills: "COMPÉTENCES TECHNIQUES",
+        languages: "LANGUES",
+        projects: "PROJETS PERSONNELS",
+        links: "LIENS & PORTFOLIO",
+        interests: "INTÉRÊTS / ASSOCIATIF",
+        experience: "EXPÉRIENCE PROFESSIONNELLE",
+        education: "ÉTUDES"
+      };
+    }
+    if (state.sectionTitles) {
+      Object.assign(cvData.sectionTitles, state.sectionTitles);
+    }
     if (state.infos) {
       const nameEl = document.querySelector('.cv-name');
       const titleEl = document.querySelector('.cv-title');
@@ -142,7 +158,8 @@
     if (!sidebar) return;
     sidebar.innerHTML = '';
 
-    addSectionTitle(sidebar, 'Compétences techniques');
+    // Compétences
+    addSectionTitle(sidebar, cvData.sectionTitles.skills, 'skills');
     const skillsDiv = document.createElement('div');
     skillsDiv.className = 'cv-tags';
     cvData.competences.forEach((skill, idx) => {
@@ -158,7 +175,8 @@
     addSkillBtn.onclick = () => { let ns = prompt('Nouvelle compétence:'); if(ns) { cvData.competences.push(ns); renderAll(); saveCurrentProfile(); } };
     sidebar.appendChild(addSkillBtn);
 
-    addSectionTitle(sidebar, 'Langues');
+    // Langues
+    addSectionTitle(sidebar, cvData.sectionTitles.languages, 'languages');
     cvData.langues.forEach((lang, idx) => {
       const div = document.createElement('div');
       div.className = 'lang-item';
@@ -203,7 +221,8 @@
     addLangBtn.onclick = () => { let nom = prompt('Nom:'); if(nom) { cvData.langues.push({ nom, niveau: 'B1' }); renderAll(); saveCurrentProfile(); } };
     sidebar.appendChild(addLangBtn);
 
-    addSectionTitle(sidebar, 'Projets personnels');
+    // Projets
+    addSectionTitle(sidebar, cvData.sectionTitles.projects, 'projects');
     cvData.projets.forEach((proj, idx) => {
       const div = document.createElement('div');
       div.className = 'cv-project-item';
@@ -231,7 +250,41 @@
     };
     sidebar.appendChild(addProjBtn);
 
-    addSectionTitle(sidebar, 'Intérêts / Associatif');
+    // Liens & portfolio
+    addSectionTitle(sidebar, cvData.sectionTitles.links, 'links');
+    cvData.liens.forEach((link, idx) => {
+      const div = document.createElement('div');
+      div.className = 'cv-link-item';
+      div.innerHTML = `
+        <div>
+          <span class="cv-link-name" contenteditable="true">${link.icone || '🔗'} ${escapeHtml(link.nom)}</span><br>
+          <span class="cv-link-url" contenteditable="true">${escapeHtml(link.url)}</span>
+        </div>
+        <button class="delete-item-btn" data-type="lien" data-index="${idx}">🗑️</button>
+      `;
+      const nameSpan = div.querySelector('.cv-link-name');
+      const urlSpan = div.querySelector('.cv-link-url');
+      nameSpan.addEventListener('blur', () => {
+        let newName = nameSpan.textContent.replace(/^[🔗🐙]\s*/, '');
+        cvData.liens[idx].nom = newName;
+        saveCurrentProfile();
+      });
+      urlSpan.addEventListener('blur', () => { cvData.liens[idx].url = urlSpan.textContent; saveCurrentProfile(); });
+      sidebar.appendChild(div);
+    });
+    const addLinkBtn = document.createElement('button');
+    addLinkBtn.textContent = '+ Ajouter lien';
+    addLinkBtn.className = 'icon-btn';
+    addLinkBtn.onclick = () => {
+      let nom = prompt('Nom:'); if(!nom) return;
+      let url = prompt('URL:'); if(!url) return;
+      cvData.liens.push({ nom, url, icone: '🔗' });
+      renderAll(); saveCurrentProfile();
+    };
+    sidebar.appendChild(addLinkBtn);
+
+    // Intérêts
+    addSectionTitle(sidebar, cvData.sectionTitles.interests, 'interests');
     const interestDiv = document.createElement('div');
     interestDiv.className = 'cv-interest';
     interestDiv.contentEditable = 'true';
@@ -239,6 +292,7 @@
     interestDiv.addEventListener('blur', () => { cvData.interets = interestDiv.textContent; saveCurrentProfile(); });
     sidebar.appendChild(interestDiv);
 
+    // Suppression des éléments (compétences, projets, liens)
     sidebar.querySelectorAll('.delete-item-btn[data-type]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let type = btn.dataset.type;
@@ -258,10 +312,17 @@
     if (!main) return;
     main.innerHTML = '';
 
+    // Expérience professionnelle
     const expTitle = document.createElement('div');
     expTitle.className = 'cv-section-title';
-    expTitle.innerHTML = `<span>Expérience professionnelle</span><div class="section-actions"><button class="icon-btn" id="add-exp-btn">➕ Ajouter</button></div>`;
+    expTitle.innerHTML = `<span contenteditable="true">${escapeHtml(cvData.sectionTitles.experience)}</span><div class="section-actions"><button class="icon-btn" id="add-exp-btn">➕ Ajouter</button></div>`;
+    const expSpan = expTitle.querySelector('span');
+    expSpan.addEventListener('blur', () => {
+      cvData.sectionTitles.experience = expSpan.textContent;
+      saveCurrentProfile();
+    });
     main.appendChild(expTitle);
+
     const expList = document.createElement('div');
     expList.id = 'exp-list';
     expList.className = 'cv-exp-list';
@@ -317,10 +378,17 @@
       saveCurrentProfile();
     });
 
+    // Études
     const eduTitle = document.createElement('div');
     eduTitle.className = 'cv-section-title';
-    eduTitle.innerHTML = `<span>Études</span><div class="section-actions"><button class="icon-btn" id="add-edu-btn">➕ Ajouter</button></div>`;
+    eduTitle.innerHTML = `<span contenteditable="true">${escapeHtml(cvData.sectionTitles.education)}</span><div class="section-actions"><button class="icon-btn" id="add-edu-btn">➕ Ajouter</button></div>`;
+    const eduSpan = eduTitle.querySelector('span');
+    eduSpan.addEventListener('blur', () => {
+      cvData.sectionTitles.education = eduSpan.textContent;
+      saveCurrentProfile();
+    });
     main.appendChild(eduTitle);
+
     const eduContainer = document.createElement('div');
     eduContainer.id = 'edu-container';
     cvData.etudes.forEach((edu, idx) => {
@@ -373,6 +441,7 @@
     }));
   }
 
+  // Ajoute un titre de section éditable
   function addSectionTitle(parent, title, storageKey) {
     const div = document.createElement('div');
     div.className = 'cv-section-title';
@@ -380,7 +449,6 @@
     span.contentEditable = 'true';
     span.textContent = title;
     span.addEventListener('blur', () => {
-      // Mettre à jour le titre dans cvData (vous devez stocker les titres)
       if (storageKey) cvData.sectionTitles[storageKey] = span.textContent;
       saveCurrentProfile();
     });
@@ -494,7 +562,7 @@
     });
   }
 
-  // --- Impression ---
+  // --- Impression avec ajustement automatique ---
   function fitToPage() {
     const root = document.querySelector('.cv-root');
     if (!root) return;
@@ -581,7 +649,7 @@
     t._t = setTimeout(() => t.style.opacity = '0', 2800);
   }
 
-  // --- Chargement initial ---
+  // --- Chargement du JSON par défaut ---
   async function loadDefaultJSON() {
     try {
       const response = await fetch(DEFAULT_JSON_URL);
@@ -594,6 +662,17 @@
           contacts: ["quentin.samudio@yahoo.fr", "07 62 60 01 63", "Paris / Montreuil", "github.com/QuentinSamudioMines"]
         };
       }
+      if (!defaultData.sectionTitles) {
+        defaultData.sectionTitles = {
+          skills: "COMPÉTENCES TECHNIQUES",
+          languages: "LANGUES",
+          projects: "PROJETS PERSONNELS",
+          links: "LIENS & PORTFOLIO",
+          interests: "INTÉRÊTS / ASSOCIATIF",
+          experience: "EXPÉRIENCE PROFESSIONNELLE",
+          education: "ÉTUDES"
+        };
+      }
       return defaultData;
     } catch (err) {
       console.warn('Fichier default_cv.json non trouvé, utilisation données intégrées');
@@ -604,6 +683,15 @@
           contacts: ["quentin.samudio@yahoo.fr", "07 62 60 01 63", "Paris / Montreuil", "github.com/QuentinSamudioMines"]
         },
         tagline: "Ingénieur-chercheur spécialisé dans la modélisation énergétique.",
+        sectionTitles: {
+          skills: "COMPÉTENCES TECHNIQUES",
+          languages: "LANGUES",
+          projects: "PROJETS PERSONNELS",
+          links: "LIENS & PORTFOLIO",
+          interests: "INTÉRÊTS / ASSOCIATIF",
+          experience: "EXPÉRIENCE PROFESSIONNELLE",
+          education: "ÉTUDES"
+        },
         experiences: [],
         competences: ["Python", "HTML", "CSS"],
         langues: [{ nom: "Anglais", niveau: "C1" }],
