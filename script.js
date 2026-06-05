@@ -373,10 +373,18 @@
     }));
   }
 
-  function addSectionTitle(parent, title) {
+  function addSectionTitle(parent, title, storageKey) {
     const div = document.createElement('div');
     div.className = 'cv-section-title';
-    div.innerHTML = `<span>${title}</span>`;
+    const span = document.createElement('span');
+    span.contentEditable = 'true';
+    span.textContent = title;
+    span.addEventListener('blur', () => {
+      // Mettre à jour le titre dans cvData (vous devez stocker les titres)
+      if (storageKey) cvData.sectionTitles[storageKey] = span.textContent;
+      saveCurrentProfile();
+    });
+    div.appendChild(span);
     parent.appendChild(div);
   }
 

@@ -1,0 +1,119 @@
+{
+  "name": "Quentin Samudio - English",
+  "infos": {
+    "name": "Quentin Samudio",
+    "title": "Research Engineer — Energy Modelling",
+    "contacts": [
+      "quentin.samudio@yahoo.fr",
+      "+33 7 62 60 01 63",
+      "Paris / Montreuil, France",
+      "github.com/QuentinSamudioMines"
+    ]
+  },
+  "tagline": "Research engineer specialised in power system modelling and energy transition analysis. Experience in large-scale modelling, urban energy systems, and collective self-consumption. Strong Python background and contributor to applied research projects on low-carbon pathways.",
+  "sectionTitles": {
+    "skills": "TECHNICAL SKILLS",
+    "languages": "LANGUAGES",
+    "projects": "PERSONAL PROJECTS",
+    "links": "LINKS & PORTFOLIO",
+    "interests": "INTERESTS / VOLUNTEERING",
+    "experience": "PROFESSIONAL EXPERIENCE",
+    "education": "EDUCATION"
+  },
+  "experiences": [
+    {
+      "id": "armines",
+      "role": "Research Engineer — Energy Modelling",
+      "org": "Armines, Paris",
+      "date": "03/2024 – Present",
+      "bullets": [
+        "Scientific paper (2026): first author on urban energy models and renovation strategies in the context of climate action plans (PCAET).",
+        "ADEME report: modelling and analysis for low-carbon trajectories (MAP 2050 project, CEEP MINES ParisTech).",
+        "SmartE refactoring: transformed 10 years of technical debt into a modular Python library (53,000+ lines)."
+      ]
+    },
+    {
+      "id": "mines",
+      "role": "Course Instructor — Advanced Python",
+      "org": "MINES Paris – Université PSL, Paris",
+      "date": "07/2025 – 02/2026",
+      "bullets": [
+        "Designed and taught a course for around 15 engineering students.",
+        "Content: data processing, web scraping, OOP, best practices, Git/GitHub."
+      ]
+    },
+    {
+      "id": "enogrid",
+      "role": "Intern — Collective Self-Consumption Project Manager",
+      "org": "Enogrid, Paris",
+      "date": "05/2023 – 12/2023",
+      "bullets": [
+        "Supported 12 clients on collective self-consumption projects.",
+        "Developed a Python module for project sizing (50+ participants), integrated into Enolab."
+      ]
+    },
+    {
+      "id": "mairie",
+      "role": "Intern — Assistant Engineer",
+      "org": "Buildings Department, City Hall of Saint-Denis",
+      "date": "05/2022 – 07/2022",
+      "bullets": [
+        "Analysis of 200+ energy audits (Tertiary Decree).",
+        "Site supervision for health and early childhood facilities."
+      ]
+    },
+    {
+      "id": "fablab",
+      "role": "Student Associate — Fab Manager",
+      "org": "Fablab Green-er, ENSE3, Grenoble",
+      "date": "11/2021 – 05/2021",
+      "bullets": [
+        "Managed and trained users on fablab equipment.",
+        "Organised DIY wind turbine workshops."
+      ]
+    }
+  ],
+  "competences": [
+    "Python",
+    "HTML",
+    "CSS",
+    "SQLite",
+    "MongoDB",
+    "Supabase",
+    "Git",
+    "Docker",
+    "Agile",
+    "React",
+    "FastAPI",
+    "Flask"
+  ],
+  "langues": [
+    { "nom": "English", "niveau": "C1" },
+    { "nom": "German", "niveau": "A2" }
+  ],
+  "projets": [
+    {
+      "nom": "dataToolBox",
+      "desc": "Python tool for multi-format data reading (DataFrame, CSV, GeoJSON, GeoPackage). github.com/CES-MDE/dataToolBox"
+    },
+    {
+      "nom": "Collective Self-Consumption Tool",
+      "desc": "Python calculation library for sizing self-consumption projects (load curves, PV, financial)."
+    },
+    {
+      "nom": "Interactive CV – Dynamic Editor",
+      "desc": "Fully editable online CV: inline editing, multi‑profile (localStorage/JSON), light/dark theme, accent color picker, drag & drop, PDF auto‑scaling."
+    }
+  ],
+  "interets": "- Krav Maga – 4 years - President, ACE (Energy Design Area) 2022–2023 - Treasurer, T4EG (Together For Earth Grenoble) 2022–2023",
+  "liens": [
+    { "nom": "LinkedIn", "url": "https://www.linkedin.com/in/quentin-samudio", "icone": "🔗" },
+    { "nom": "GitHub", "url": "https://github.com/QuentinSamudioMines", "icone": "🐙" }
+  ],
+  "etudes": [
+    { "degree": "Master of Engineering — Energy Systems and Markets", "school": "ENSE3 – Grenoble INP, 01/2020 – 01/2024" },
+    { "degree": "Architecture Certificate – PARIN Program (Architecture-Engineering)", "school": "ENSAG, Grenoble, 01/2023" },
+    { "degree": "Graduate Program — Environment & Natural Resources (Erasmus)", "school": "University of Reykjavik, Iceland, 01/2022" },
+    { "degree": "Preparatory Classes PSI* (Physics and Engineering Sciences)", "school": "Lycée Jacques Decour, Paris, 01/2017 – 01/2020" }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "name": "Quentin Samudio - Original",
+  "name": "Défaut",
   "infos": {
     "name": "Quentin Samudio",
     "title": "Ingénieur Chercheur — Modélisation énergétique",
@@ -11,6 +11,15 @@
     ]
   },
   "tagline": "Ingénieur-chercheur spécialisé dans la modélisation des systèmes électriques et l'analyse de la transition énergétique. Expérience en modélisation à grande échelle, systèmes énergétiques urbains et autoconsommation collective. Solide background Python et contributeur à des projets de recherche appliquée sur les trajectoires bas carbone.",
+  "sectionTitles": {
+    "skills": "COMPÉTENCES TECHNIQUES",
+    "languages": "LANGUES",
+    "projects": "PROJETS PERSONNELS",
+    "links": "LIENS & PORTFOLIO",
+    "interests": "INTÉRÊTS / ASSOCIATIF",
+    "experience": "EXPÉRIENCE PROFESSIONNELLE",
+    "education": "ÉTUDES"
+  },
   "experiences": [
     {
       "id": "armines",
@@ -79,14 +88,8 @@
     "Flask"
   ],
   "langues": [
-    {
-      "nom": "Anglais",
-      "niveau": "C1"
-    },
-    {
-      "nom": "Allemand",
-      "niveau": "A2"
-    }
+    { "nom": "Anglais", "niveau": "C1" },
+    { "nom": "Allemand", "niveau": "A2" }
   ],
   "projets": [
     {
@@ -98,12 +101,15 @@
       "desc": "Librairie de calcul Python pour le dimensionnement de projets d'autoconsommation (courbes de charge, PV, financier)."
     },
     {
-      "nom": "CV interactif - Editeur dynamique",
-      "desc": "Éditeur dynamique\nHTML, CSS,  JavaScript, localStorage avec fichiers JSON "
+      "nom": "CV interactif - Éditeur dynamique",
+      "desc": "Éditeur dynamique\nHTML, CSS, JavaScript, localStorage avec fichiers JSON"
     }
   ],
-  "interets": "- Krav Maga - 4 ans - Président, ACE (Aire de Conception Énergétique) - 2022–2023 - Trésorier, T4EG (Together For Earth Grenoble) - 2022–2023",
-  "liens": [],
+  "interets": "- Krav Maga - 4 ans\n- Président, ACE (Aire de Conception Énergétique) 2022–2023\n- Trésorier, T4EG (Together For Earth Grenoble) 2022–2023",
+  "liens": [
+    { "nom": "LinkedIn", "url": "https://www.linkedin.com/in/quentin-samudio", "icone": "🔗" },
+    { "nom": "GitHub", "url": "https://github.com/QuentinSamudioMines", "icone": "🐙" }
+  ],
   "etudes": [
     {
       "degree": "Diplôme d'Ingénieur — Systèmes Énergétiques et Marchés",
