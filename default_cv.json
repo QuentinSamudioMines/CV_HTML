@@ -1,0 +1,121 @@
+{
+  "name": "Quentin Samudio - Original",
+  "infos": {
+    "name": "Quentin Samudio",
+    "title": "Ingénieur Chercheur — Modélisation énergétique",
+    "contacts": [
+      "quentin.samudio@yahoo.fr",
+      "07 62 60 01 63",
+      "Paris / Montreuil",
+      "github.com/QuentinSamudioMines"
+    ]
+  },
+  "tagline": "Ingénieur-chercheur spécialisé dans la modélisation des systèmes électriques et l'analyse de la transition énergétique. Expérience en modélisation à grande échelle, systèmes énergétiques urbains et autoconsommation collective. Solide background Python et contributeur à des projets de recherche appliquée sur les trajectoires bas carbone.",
+  "experiences": [
+    {
+      "id": "armines",
+      "role": "Ingénieur de recherche — Modélisation énergétique",
+      "org": "Armines, Paris",
+      "date": "03/2024 – Actuel",
+      "bullets": [
+        "Article scientifique (2026) : premier auteur sur les modèles énergétiques urbains et les stratégies de rénovation dans le contexte des PCAET.",
+        "Rapport Ademe : modélisations et analyses pour les trajectoires bas carbone (projet MAP 2050, CEEP MINES ParisTech).",
+        "Refactoring de SmartE : transformation d'une dette technique de 10 ans en une librairie Python modulaire (53 000+ lignes)."
+      ]
+    },
+    {
+      "id": "mines",
+      "role": "Chargé de cours — Python Avancé",
+      "org": "MINES Paris – Université PSL, Paris",
+      "date": "07/2025 – 02/2026",
+      "bullets": [
+        "Conception et animation d'un cours pour une quinzaine d'étudiants ingénieurs.",
+        "Contenus : traitement de données, web scraping, POO, bonnes pratiques, Git/GitHub."
+      ]
+    },
+    {
+      "id": "enogrid",
+      "role": "Stagiaire — Chef de Projet Autoconsommation collective",
+      "org": "Enogrid, Paris",
+      "date": "05/2023 – 12/2023",
+      "bullets": [
+        "Accompagnement de 12 clients sur des projets d'autoconsommation collective.",
+        "Développement d'un module Python pour le dimensionnement de projets (50+ participants), intégré à Enolab."
+      ]
+    },
+    {
+      "id": "mairie",
+      "role": "Stagiaire — Ingénieur assistant",
+      "org": "Direction des Bâtiments, Mairie de Saint-Denis",
+      "date": "05/2022 – 07/2022",
+      "bullets": [
+        "Analyse de 200+ audits énergétiques (Décret Tertiaire).",
+        "Suivi de chantier pôle santé et petite enfance."
+      ]
+    },
+    {
+      "id": "fablab",
+      "role": "Étudiant associé — Fabmanager",
+      "org": "Fablab Green-er, ENSE3, Grenoble",
+      "date": "11/2021 – 05/2021",
+      "bullets": [
+        "Gestion et formation sur le matériel du fablab.",
+        "Organisation d'ateliers d'auto-fabrication d'éolienne."
+      ]
+    }
+  ],
+  "competences": [
+    "Python",
+    "HTML",
+    "CSS",
+    "SQLite",
+    "MongoDB",
+    "Supabase",
+    "Git",
+    "Docker",
+    "Agile",
+    "React",
+    "FastAPI",
+    "Flask"
+  ],
+  "langues": [
+    {
+      "nom": "Anglais",
+      "niveau": "C1"
+    },
+    {
+      "nom": "Allemand",
+      "niveau": "A2"
+    }
+  ],
+  "projets": [
+    {
+      "nom": "dataToolBox",
+      "desc": "Outil Python de lecture multi-formats (DataFrame, CSV, GeoJSON, GeoPackage). github.com/CES-MDE/dataToolBox"
+    },
+    {
+      "nom": "Outil autoconsommation collective",
+      "desc": "Library de calcul Python pour le dimensionnement de projets d'autoconsommation (courbes de charge, PV, financier)."
+    }
+  ],
+  "interets": "- Krav Maga - 4 ans - Président, ACE (Aire de Conception Énergétique) - 2022–2023 - Trésorier, T4EG (Together For Earth Grenoble) - 2022–2023",
+  "liens": [],
+  "etudes": [
+    {
+      "degree": "Diplôme d'Ingénieur — Systèmes Énergétiques et Marchés",
+      "school": "ENSE3 – Grenoble INP, 01/2020 – 01/2024"
+    },
+    {
+      "degree": "Certificat Architecture – Programme PARIN",
+      "school": "ENSAG, Grenoble, 01/2023"
+    },
+    {
+      "degree": "Programme Graduate — Environnement & Ressources Naturelles",
+      "school": "Université de Reykjavik, Islande, 01/2022"
+    },
+    {
+      "degree": "Classes préparatoires PSI*",
+      "school": "Lycée Jacques Decour, Paris, 01/2017 – 01/2020"
+    }
+  ]
+}

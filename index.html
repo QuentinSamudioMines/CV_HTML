@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV - Quentin Samudio (Édition directe)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1 class="sr-only">CV de Quentin Samudio</h1>
+
+<div class="toolbar">
+  <div class="toolbar-left">
+    <span class="toolbar-title">✦ Édition directe</span>
+    <button class="tb-btn" id="drag-btn">⠿ Réordonner</button>
+  </div>
+  <div class="toolbar-right">
+    <div class="profiles-wrap">
+      <select id="profile-select"></select>
+      <button class="tb-btn tb-btn--save" id="save-profile-btn">💾 Sauvegarder</button>
+      <button class="tb-btn tb-btn--new" id="new-profile-btn">＋ Nouveau</button>
+      <button class="tb-btn tb-btn--delete" id="delete-profile-btn">✕</button>
+      <button class="tb-btn" id="export-profile-btn">📤 Exporter</button>
+      <button class="tb-btn" id="import-profile-btn">📂 Importer</button>
+    </div>
+    <input type="color" id="accent-color-picker" value="#2D5A3D" title="Couleur d'accent">
+    <button class="tb-btn" id="theme-btn">🌙</button>
+    <button class="tb-btn tb-btn--pdf" id="pdf-btn">📥 PDF</button>
+  </div>
+</div>
+
+<div class="cv-root">
+  <div class="cv-header">
+    <div class="cv-avatar"><img src="profile.jpg" alt="Photo"></div>
+    <div>
+      <div class="cv-name" contenteditable="true">Quentin Samudio</div>
+      <div class="cv-title" contenteditable="true">Ingénieur Chercheur — Modélisation énergétique</div>
+      <div class="cv-contacts" id="cv-contacts">
+        <span contenteditable="true">quentin.samudio@yahoo.fr</span>
+        <span contenteditable="true">07 62 60 01 63</span>
+        <span contenteditable="true">Paris / Montreuil</span>
+        <span contenteditable="true">github.com/QuentinSamudioMines</span>
+      </div>
+      <div class="cv-tagline" contenteditable="true" id="tagline-display"></div>
+    </div>
+  </div>
+  <div class="cv-body">
+    <div class="cv-sidebar" id="cv-sidebar"></div>
+    <div class="cv-main" id="cv-main"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
