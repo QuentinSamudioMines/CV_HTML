@@ -95,7 +95,11 @@
     },
     {
       "nom": "Outil autoconsommation collective",
-      "desc": "Library de calcul Python pour le dimensionnement de projets d'autoconsommation (courbes de charge, PV, financier)."
+      "desc": "Librairie de calcul Python pour le dimensionnement de projets d'autoconsommation (courbes de charge, PV, financier)."
+    },
+    {
+      "nom": "CV interactif - Editeur dynamique",
+      "desc": "Éditeur dynamique\nHTML, CSS,  JavaScript, localStorage avec fichiers JSON "
     }
   ],
   "interets": "- Krav Maga - 4 ans - Président, ACE (Aire de Conception Énergétique) - 2022–2023 - Trésorier, T4EG (Together For Earth Grenoble) - 2022–2023",
