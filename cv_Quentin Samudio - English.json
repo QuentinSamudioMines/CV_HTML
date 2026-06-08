@@ -15,6 +15,7 @@
     "skills": "TECHNICAL SKILLS",
     "languages": "LANGUAGES",
     "projects": "PERSONAL PROJECTS",
+    "links": "LINKS & PORTFOLIO",
     "interests": "INTERESTS / VOLUNTEERING",
     "experience": "PROFESSIONAL EXPERIENCE",
     "education": "EDUCATION"
@@ -87,8 +88,14 @@
     "Flask"
   ],
   "langues": [
-    { "nom": "English", "niveau": "C1" },
-    { "nom": "German", "niveau": "A2" }
+    {
+      "nom": "English",
+      "niveau": "C1"
+    },
+    {
+      "nom": "German",
+      "niveau": "A2"
+    }
   ],
   "projets": [
     {
@@ -105,10 +112,52 @@
     }
   ],
   "interets": "- Krav Maga – 4 years - President, ACE (Energy Design Area) 2022–2023 - Treasurer, T4EG (Together For Earth Grenoble) 2022–2023",
+  "liens": [
+    {
+      "nom": "LinkedIn",
+      "url": "https://www.linkedin.com/in/quentin-samudio",
+      "icone": "🔗"
+    },
+    {
+      "nom": "GitHub",
+      "url": "https://github.com/QuentinSamudioMines",
+      "icone": "🐙"
+    }
+  ],
   "etudes": [
-    { "degree": "Master of Engineering — Energy Systems and Markets", "school": "ENSE3 – Grenoble INP, 01/2020 – 01/2024" },
-    { "degree": "Architecture Certificate – PARIN Program (Architecture-Engineering)", "school": "ENSAG, Grenoble, 01/2023" },
-    { "degree": "Graduate Program — Environment & Natural Resources (Erasmus)", "school": "University of Reykjavik, Iceland, 01/2022" },
-    { "degree": "Preparatory Classes PSI* (Physics and Engineering Sciences)", "school": "Lycée Jacques Decour, Paris, 01/2017 – 01/2020" }
-  ]
+    {
+      "degree": "Master of Engineering — Energy Systems and Markets",
+      "school": "ENSE3 – Grenoble INP, 01/2020 – 01/2024"
+    },
+    {
+      "degree": "Architecture Certificate – PARIN Program (Architecture-Engineering)",
+      "school": "ENSAG, Grenoble, 01/2023"
+    },
+    {
+      "degree": "Graduate Program — Environment & Natural Resources (Erasmus)",
+      "school": "University of Reykjavik, Iceland, 01/2022"
+    },
+    {
+      "degree": "Preparatory Classes PSI* (Physics and Engineering Sciences)",
+      "school": "Lycée Jacques Decour, Paris, 01/2017 – 01/2020"
+    }
+  ],
+  "hiddenSections": {
+    "links": true
+  },
+  "fontSizes": {
+    "fs-name": 25,
+    "fs-title": 19,
+    "fs-contacts": 13,
+    "fs-tagline": 15,
+    "fs-sec-title": 15,
+    "fs-skills": 13,
+    "fs-lang": 14,
+    "fs-projects": 13,
+    "fs-interests": 13,
+    "fs-exp-role": 15,
+    "fs-exp-org": 14,
+    "fs-exp-bullets": 13,
+    "fs-edu": 14
+  }
 }

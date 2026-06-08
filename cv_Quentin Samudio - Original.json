@@ -1,5 +1,5 @@
 {
-  "name": "Défaut",
+  "name": "Quentin Samudio - Original",
   "infos": {
     "name": "Quentin Samudio",
     "title": "Ingénieur Chercheur — Modélisation énergétique",
@@ -15,6 +15,7 @@
     "skills": "COMPÉTENCES TECHNIQUES",
     "languages": "LANGUES",
     "projects": "PROJETS PERSONNELS",
+    "links": "LIENS & PORTFOLIO",
     "interests": "INTÉRÊTS / ASSOCIATIF",
     "experience": "EXPÉRIENCE PROFESSIONNELLE",
     "education": "ÉTUDES"
@@ -87,8 +88,14 @@
     "Flask"
   ],
   "langues": [
-    { "nom": "Anglais", "niveau": "C1" },
-    { "nom": "Allemand", "niveau": "A2" }
+    {
+      "nom": "Anglais",
+      "niveau": "C1"
+    },
+    {
+      "nom": "Allemand",
+      "niveau": "A2"
+    }
   ],
   "projets": [
     {
@@ -100,11 +107,12 @@
       "desc": "Librairie de calcul Python pour le dimensionnement de projets d'autoconsommation (courbes de charge, PV, financier)."
     },
     {
-      "nom": "CV interactif - Éditeur dynamique",
-      "desc": "Éditeur dynamique\nHTML, CSS, JavaScript, localStorage avec fichiers JSON"
+      "nom": "CV interactif - Editeur dynamique",
+      "desc": "Éditeur dynamique\nHTML, CSS,  JavaScript, localStorage avec fichiers JSON "
     }
   ],
-  "interets": "- Krav Maga - 4 ans\n- Président, ACE (Aire de Conception Énergétique) 2022–2023\n- Trésorier, T4EG (Together For Earth Grenoble) 2022–2023",
+  "interets": "- Krav Maga - 4 ans - Président, ACE (Aire de Conception Énergétique) - 2022–2023 - Trésorier, T4EG (Together For Earth Grenoble) - 2022–2023",
+  "liens": [],
   "etudes": [
     {
       "degree": "Diplôme d'Ingénieur — Systèmes Énergétiques et Marchés",
@@ -122,5 +130,24 @@
       "degree": "Classes préparatoires PSI*",
       "school": "Lycée Jacques Decour, Paris, 01/2017 – 01/2020"
     }
-  ]
+  ],
+  "hiddenSections": {
+    "links": true,
+    "interests": false
+  },
+  "fontSizes": {
+    "fs-name": 26,
+    "fs-title": 19,
+    "fs-contacts": 13,
+    "fs-tagline": 15,
+    "fs-sec-title": 15,
+    "fs-skills": 13,
+    "fs-lang": 14,
+    "fs-projects": 13,
+    "fs-interests": 13,
+    "fs-exp-role": 15,
+    "fs-exp-org": 14,
+    "fs-exp-bullets": 13,
+    "fs-edu": 14
+  }
 }

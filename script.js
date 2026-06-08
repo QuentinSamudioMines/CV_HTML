@@ -141,7 +141,8 @@
       interets: cvData.interets,
       liens: cvData.liens,
       etudes: cvData.etudes,
-      hiddenSections: cvData.hiddenSections || {}
+      hiddenSections: cvData.hiddenSections || {},
+      fontSizes: { ...fontSizes }
     };
   }
 
@@ -177,6 +178,12 @@
     cvData.liens = state.liens || [];
     cvData.etudes = state.etudes || [];
     cvData.hiddenSections = state.hiddenSections || {};
+    if (state.fontSizes) {
+      Object.assign(fontSizes, state.fontSizes);
+      applyFontSizes();
+      saveFontSizes();
+      refreshSliders();
+    }
     renderAll();
   }
 
