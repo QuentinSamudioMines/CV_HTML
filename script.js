@@ -17,7 +17,7 @@
     { id: 'fs-sec-title', label: 'Titres de section',  var: '--fs-section-title',min: 8,  max: 15, step: 0.5, def: 11  },
     { id: 'fs-skills',    label: 'Compétences (tags)', var: '--fs-skills',       min: 8,  max: 15, step: 0.5, def: 11  },
     { id: 'fs-lang',      label: 'Langues',            var: '--fs-lang',         min: 8,  max: 16, step: 0.5, def: 12  },
-    { id: 'fs-projects',  label: 'Projets',            var: '--fs-projects',     min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-projects',  label: 'Projets & Liens',    var: '--fs-projects',     min: 8,  max: 16, step: 0.5, def: 12  },
     { id: 'fs-interests', label: 'Intérêts',           var: '--fs-interests',    min: 8,  max: 16, step: 0.5, def: 12  },
     { id: 'fs-exp-role',  label: 'Poste (rôle)',       var: '--fs-exp-role',     min: 9,  max: 18, step: 0.5, def: 13  },
     { id: 'fs-exp-org',   label: 'Entreprise / org.',  var: '--fs-exp-org',      min: 8,  max: 16, step: 0.5, def: 12  },
@@ -139,7 +139,9 @@
       langues: cvData.langues,
       projets: cvData.projets,
       interets: cvData.interets,
-      etudes: cvData.etudes
+      liens: cvData.liens,
+      etudes: cvData.etudes,
+      hiddenSections: cvData.hiddenSections || {}
     };
   }
 
@@ -148,7 +150,7 @@
     if (!cvData.sectionTitles) {
       cvData.sectionTitles = {
         skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES",
-        projects: "PROJETS PERSONNELS",
+        projects: "PROJETS PERSONNELS", links: "LIENS & PORTFOLIO",
         interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE",
         education: "ÉTUDES"
       };
@@ -172,7 +174,9 @@
     cvData.langues = state.langues || [];
     cvData.projets = state.projets || [];
     cvData.interets = state.interets || '';
+    cvData.liens = state.liens || [];
     cvData.etudes = state.etudes || [];
+    cvData.hiddenSections = state.hiddenSections || {};
     renderAll();
   }
 
@@ -247,103 +251,175 @@
     contactSpans.forEach(span => span.addEventListener('blur', () => saveCurrentProfile()));
   }
 
+  // Helper: section wrapper with hide/show toggle button
+  function makeSectionBlock(sidebar, titleKey, storageKey, buildContentFn) {
+    const hidden = !!(cvData.hiddenSections && cvData.hiddenSections[storageKey]);
+
+    // Title row
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'cv-section-title' + (hidden ? ' section-title-hidden' : '');
+
+    const span = document.createElement('span');
+    span.contentEditable = 'true';
+    span.textContent = cvData.sectionTitles[storageKey] || titleKey;
+    span.addEventListener('blur', () => {
+      cvData.sectionTitles[storageKey] = span.textContent;
+      saveCurrentProfile();
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'section-actions';
+
+    // Toggle visibility button
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'icon-btn section-hide-btn';
+    toggleBtn.title = hidden ? 'Afficher la section' : 'Masquer la section du CV';
+    toggleBtn.textContent = hidden ? '👁' : '🙈';
+    toggleBtn.addEventListener('click', () => {
+      if (!cvData.hiddenSections) cvData.hiddenSections = {};
+      cvData.hiddenSections[storageKey] = !cvData.hiddenSections[storageKey];
+      saveCurrentProfile();
+      renderAll();
+    });
+
+    actions.appendChild(toggleBtn);
+    titleDiv.appendChild(span);
+    titleDiv.appendChild(actions);
+    sidebar.appendChild(titleDiv);
+
+    // Content wrapper — hidden from print & visually struck when toggled off
+    const contentWrap = document.createElement('div');
+    contentWrap.className = 'section-content' + (hidden ? ' section-hidden' : '');
+    buildContentFn(contentWrap);
+    sidebar.appendChild(contentWrap);
+  }
+
   function renderSidebar() {
     const sidebar = document.getElementById('cv-sidebar');
     if (!sidebar) return;
     sidebar.innerHTML = '';
+    if (!cvData.hiddenSections) cvData.hiddenSections = {};
 
-    addSectionTitle(sidebar, cvData.sectionTitles.skills, 'skills');
-    const skillsDiv = document.createElement('div');
-    skillsDiv.className = 'cv-tags';
-    cvData.competences.forEach((skill, idx) => {
-      const tag = document.createElement('span');
-      tag.className = 'cv-tag';
-      tag.innerHTML = `${escapeHtml(skill)} <button class="delete-item-btn" data-type="skill" data-index="${idx}">🗑️</button>`;
-      skillsDiv.appendChild(tag);
-    });
-    sidebar.appendChild(skillsDiv);
-    const addSkillBtn = document.createElement('button');
-    addSkillBtn.textContent = '+ Ajouter compétence';
-    addSkillBtn.className = 'icon-btn';
-    addSkillBtn.onclick = () => { let ns = prompt('Nouvelle compétence:'); if(ns) { cvData.competences.push(ns); renderAll(); saveCurrentProfile(); } };
-    sidebar.appendChild(addSkillBtn);
-
-    addSectionTitle(sidebar, cvData.sectionTitles.languages, 'languages');
-    cvData.langues.forEach((lang, idx) => {
-      const div = document.createElement('div');
-      div.className = 'lang-item';
-      const nomSpan = document.createElement('span');
-      nomSpan.className = 'lang-name';
-      nomSpan.contentEditable = 'true';
-      nomSpan.textContent = lang.nom;
-      nomSpan.addEventListener('blur', () => { cvData.langues[idx].nom = nomSpan.textContent; saveCurrentProfile(); });
-      const select = document.createElement('select');
-      select.className = 'lang-level-select';
-      ['A1','A2','B1','B2','C1','C2'].forEach(n => {
-        const opt = document.createElement('option');
-        opt.value = n; opt.textContent = n;
-        if (lang.niveau === n) opt.selected = true;
-        select.appendChild(opt);
+    // --- Compétences ---
+    makeSectionBlock(sidebar, cvData.sectionTitles.skills, 'skills', (wrap) => {
+      const skillsDiv = document.createElement('div');
+      skillsDiv.className = 'cv-tags';
+      cvData.competences.forEach((skill, idx) => {
+        const tag = document.createElement('span');
+        tag.className = 'cv-tag';
+        tag.innerHTML = `${escapeHtml(skill)} <button class="delete-item-btn" data-type="skill" data-index="${idx}">🗑️</button>`;
+        skillsDiv.appendChild(tag);
       });
-      select.addEventListener('change', (e) => {
-        cvData.langues[idx].niveau = e.target.value;
-        niveauSpan.textContent = e.target.value;
-        saveCurrentProfile();
+      wrap.appendChild(skillsDiv);
+      const addBtn = document.createElement('button');
+      addBtn.textContent = '+ Ajouter compétence'; addBtn.className = 'icon-btn';
+      addBtn.onclick = () => { let ns = prompt('Nouvelle compétence:'); if(ns) { cvData.competences.push(ns); renderAll(); saveCurrentProfile(); } };
+      wrap.appendChild(addBtn);
+    });
+
+    // --- Langues ---
+    makeSectionBlock(sidebar, cvData.sectionTitles.languages, 'languages', (wrap) => {
+      cvData.langues.forEach((lang, idx) => {
+        const div = document.createElement('div');
+        div.className = 'lang-item';
+        const nomSpan = document.createElement('span');
+        nomSpan.className = 'lang-name'; nomSpan.contentEditable = 'true'; nomSpan.textContent = lang.nom;
+        nomSpan.addEventListener('blur', () => { cvData.langues[idx].nom = nomSpan.textContent; saveCurrentProfile(); });
+        const select = document.createElement('select');
+        select.className = 'lang-level-select';
+        ['A1','A2','B1','B2','C1','C2'].forEach(n => {
+          const opt = document.createElement('option');
+          opt.value = n; opt.textContent = n;
+          if (lang.niveau === n) opt.selected = true;
+          select.appendChild(opt);
+        });
+        const niveauSpan = document.createElement('span');
+        niveauSpan.className = 'lang-level-text'; niveauSpan.textContent = lang.niveau;
+        select.addEventListener('change', (e) => { cvData.langues[idx].niveau = e.target.value; niveauSpan.textContent = e.target.value; saveCurrentProfile(); });
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '🗑️'; delBtn.className = 'delete-item-btn';
+        delBtn.onclick = () => { cvData.langues.splice(idx,1); renderAll(); saveCurrentProfile(); };
+        div.appendChild(nomSpan); div.appendChild(select); div.appendChild(niveauSpan); div.appendChild(delBtn);
+        wrap.appendChild(div);
       });
-      const niveauSpan = document.createElement('span');
-      niveauSpan.className = 'lang-level-text';
-      niveauSpan.textContent = lang.niveau;
-      const delBtn = document.createElement('button');
-      delBtn.textContent = '🗑️'; delBtn.className = 'delete-item-btn';
-      delBtn.onclick = () => { cvData.langues.splice(idx,1); renderAll(); saveCurrentProfile(); };
-      div.appendChild(nomSpan); div.appendChild(select); div.appendChild(niveauSpan); div.appendChild(delBtn);
-      sidebar.appendChild(div);
+      const addBtn = document.createElement('button');
+      addBtn.textContent = '+ Ajouter langue'; addBtn.className = 'icon-btn';
+      addBtn.onclick = () => { let nom = prompt('Nom:'); if(nom) { cvData.langues.push({ nom, niveau: 'B1' }); renderAll(); saveCurrentProfile(); } };
+      wrap.appendChild(addBtn);
     });
-    const addLangBtn = document.createElement('button');
-    addLangBtn.textContent = '+ Ajouter langue'; addLangBtn.className = 'icon-btn';
-    addLangBtn.onclick = () => { let nom = prompt('Nom:'); if(nom) { cvData.langues.push({ nom, niveau: 'B1' }); renderAll(); saveCurrentProfile(); } };
-    sidebar.appendChild(addLangBtn);
 
-    addSectionTitle(sidebar, cvData.sectionTitles.projects, 'projects');
-    cvData.projets.forEach((proj, idx) => {
-      const div = document.createElement('div');
-      div.className = 'cv-project-item';
-      div.innerHTML = `
-        <div>
-          <span class="cv-project-name" contenteditable="true">${escapeHtml(proj.nom)}</span><br>
-          <span class="cv-project-desc" contenteditable="true">${escapeHtml(proj.desc)}</span>
-        </div>
-        <button class="delete-item-btn" data-type="projet" data-index="${idx}">🗑️</button>
-      `;
-      const nameSpan = div.querySelector('.cv-project-name');
-      const descSpan = div.querySelector('.cv-project-desc');
-      nameSpan.addEventListener('blur', () => { cvData.projets[idx].nom = nameSpan.textContent; saveCurrentProfile(); });
-      descSpan.addEventListener('blur', () => { cvData.projets[idx].desc = descSpan.textContent; saveCurrentProfile(); });
-      sidebar.appendChild(div);
+    // --- Projets ---
+    makeSectionBlock(sidebar, cvData.sectionTitles.projects, 'projects', (wrap) => {
+      cvData.projets.forEach((proj, idx) => {
+        const div = document.createElement('div');
+        div.className = 'cv-project-item';
+        div.innerHTML = `
+          <div>
+            <span class="cv-project-name" contenteditable="true">${escapeHtml(proj.nom)}</span><br>
+            <span class="cv-project-desc" contenteditable="true">${escapeHtml(proj.desc)}</span>
+          </div>
+          <button class="delete-item-btn" data-type="projet" data-index="${idx}">🗑️</button>
+        `;
+        const nameSpan = div.querySelector('.cv-project-name');
+        const descSpan = div.querySelector('.cv-project-desc');
+        nameSpan.addEventListener('blur', () => { cvData.projets[idx].nom = nameSpan.textContent; saveCurrentProfile(); });
+        descSpan.addEventListener('blur', () => { cvData.projets[idx].desc = descSpan.textContent; saveCurrentProfile(); });
+        wrap.appendChild(div);
+      });
+      const addBtn = document.createElement('button');
+      addBtn.textContent = '+ Ajouter projet'; addBtn.className = 'icon-btn';
+      addBtn.onclick = () => {
+        let nom = prompt('Nom:'); if(!nom) return;
+        let desc = prompt('Description:'); if(!desc) return;
+        cvData.projets.push({ nom, desc }); renderAll(); saveCurrentProfile();
+      };
+      wrap.appendChild(addBtn);
     });
-    const addProjBtn = document.createElement('button');
-    addProjBtn.textContent = '+ Ajouter projet'; addProjBtn.className = 'icon-btn';
-    addProjBtn.onclick = () => {
-      let nom = prompt('Nom:'); if(!nom) return;
-      let desc = prompt('Description:'); if(!desc) return;
-      cvData.projets.push({ nom, desc }); renderAll(); saveCurrentProfile();
-    };
-    sidebar.appendChild(addProjBtn);
 
-    addSectionTitle(sidebar, cvData.sectionTitles.links, 'links');
+    // --- Liens & Portfolio ---
+    makeSectionBlock(sidebar, cvData.sectionTitles.links, 'links', (wrap) => {
+      cvData.liens.forEach((link, idx) => {
+        const div = document.createElement('div');
+        div.className = 'cv-link-item';
+        div.innerHTML = `
+          <div>
+            <span class="cv-link-name" contenteditable="true">${link.icone || '🔗'} ${escapeHtml(link.nom)}</span><br>
+            <span class="cv-link-url" contenteditable="true">${escapeHtml(link.url)}</span>
+          </div>
+          <button class="delete-item-btn" data-type="lien" data-index="${idx}">🗑️</button>
+        `;
+        const nameSpan = div.querySelector('.cv-link-name');
+        const urlSpan = div.querySelector('.cv-link-url');
+        nameSpan.addEventListener('blur', () => { cvData.liens[idx].nom = nameSpan.textContent.replace(/^[🔗🐙]\s*/, ''); saveCurrentProfile(); });
+        urlSpan.addEventListener('blur', () => { cvData.liens[idx].url = urlSpan.textContent; saveCurrentProfile(); });
+        wrap.appendChild(div);
+      });
+      const addBtn = document.createElement('button');
+      addBtn.textContent = '+ Ajouter lien'; addBtn.className = 'icon-btn';
+      addBtn.onclick = () => {
+        let nom = prompt('Nom:'); if(!nom) return;
+        let url = prompt('URL:'); if(!url) return;
+        cvData.liens.push({ nom, url, icone: '🔗' }); renderAll(); saveCurrentProfile();
+      };
+      wrap.appendChild(addBtn);
+    });
 
-    addSectionTitle(sidebar, cvData.sectionTitles.interests, 'interests');
-    const interestDiv = document.createElement('div');
-    interestDiv.className = 'cv-interest'; interestDiv.contentEditable = 'true';
-    interestDiv.textContent = cvData.interets;
-    interestDiv.addEventListener('blur', () => { cvData.interets = interestDiv.textContent; saveCurrentProfile(); });
-    sidebar.appendChild(interestDiv);
+    // --- Intérêts ---
+    makeSectionBlock(sidebar, cvData.sectionTitles.interests, 'interests', (wrap) => {
+      const interestDiv = document.createElement('div');
+      interestDiv.className = 'cv-interest'; interestDiv.contentEditable = 'true';
+      interestDiv.textContent = cvData.interets;
+      interestDiv.addEventListener('blur', () => { cvData.interets = interestDiv.textContent; saveCurrentProfile(); });
+      wrap.appendChild(interestDiv);
+    });
 
+    // Delegated delete for skills/projets/liens
     sidebar.querySelectorAll('.delete-item-btn[data-type]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let type = btn.dataset.type; let idx = parseInt(btn.dataset.index);
         if (type === 'skill') cvData.competences.splice(idx,1);
         if (type === 'projet') cvData.projets.splice(idx,1);
+        if (type === 'lien') cvData.liens.splice(idx,1);
         renderAll(); saveCurrentProfile(); e.stopPropagation();
       });
     });
@@ -616,15 +692,15 @@
         defaultData.infos = { name: "Quentin Samudio", title: "Ingénieur Chercheur — Modélisation énergétique", contacts: ["quentin.samudio@yahoo.fr","07 62 60 01 63","Paris / Montreuil","github.com/QuentinSamudioMines"] };
       }
       if (!defaultData.sectionTitles) {
-        defaultData.sectionTitles = { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" };
+        defaultData.sectionTitles = { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", links: "LIENS & PORTFOLIO", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" };
       }
       return defaultData;
     } catch (err) {
       return {
         infos: { name: "Quentin Samudio", title: "Ingénieur Chercheur — Modélisation énergétique", contacts: ["quentin.samudio@yahoo.fr","07 62 60 01 63","Paris / Montreuil","github.com/QuentinSamudioMines"] },
         tagline: "Ingénieur-chercheur spécialisé dans la modélisation énergétique.",
-        sectionTitles: { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" },
-        experiences: [], competences: ["Python","HTML","CSS"], langues: [{ nom: "Anglais", niveau: "C1" }], projets: [], interets: [], etudes: []
+        sectionTitles: { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", links: "LIENS & PORTFOLIO", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" },
+        experiences: [], competences: ["Python","HTML","CSS"], langues: [{ nom: "Anglais", niveau: "C1" }], projets: [], interets: "", liens: [], etudes: []
       };
     }
   }
