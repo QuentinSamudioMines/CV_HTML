@@ -15,7 +15,6 @@
     "skills": "COMPÉTENCES TECHNIQUES",
     "languages": "LANGUES",
     "projects": "PROJETS PERSONNELS",
-    "links": "LIENS & PORTFOLIO",
     "interests": "INTÉRÊTS / ASSOCIATIF",
     "experience": "EXPÉRIENCE PROFESSIONNELLE",
     "education": "ÉTUDES"
@@ -106,10 +105,6 @@
     }
   ],
   "interets": "- Krav Maga - 4 ans\n- Président, ACE (Aire de Conception Énergétique) 2022–2023\n- Trésorier, T4EG (Together For Earth Grenoble) 2022–2023",
-  "liens": [
-    { "nom": "LinkedIn", "url": "https://www.linkedin.com/in/quentin-samudio", "icone": "🔗" },
-    { "nom": "GitHub", "url": "https://github.com/QuentinSamudioMines", "icone": "🐙" }
-  ],
   "etudes": [
     {
       "degree": "Diplôme d'Ingénieur — Systèmes Énergétiques et Marchés",

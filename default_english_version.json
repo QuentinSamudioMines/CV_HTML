@@ -15,7 +15,6 @@
     "skills": "TECHNICAL SKILLS",
     "languages": "LANGUAGES",
     "projects": "PERSONAL PROJECTS",
-    "links": "LINKS & PORTFOLIO",
     "interests": "INTERESTS / VOLUNTEERING",
     "experience": "PROFESSIONAL EXPERIENCE",
     "education": "EDUCATION"
@@ -106,10 +105,6 @@
     }
   ],
   "interets": "- Krav Maga – 4 years - President, ACE (Energy Design Area) 2022–2023 - Treasurer, T4EG (Together For Earth Grenoble) 2022–2023",
-  "liens": [
-    { "nom": "LinkedIn", "url": "https://www.linkedin.com/in/quentin-samudio", "icone": "🔗" },
-    { "nom": "GitHub", "url": "https://github.com/QuentinSamudioMines", "icone": "🐙" }
-  ],
   "etudes": [
     { "degree": "Master of Engineering — Energy Systems and Markets", "school": "ENSE3 – Grenoble INP, 01/2020 – 01/2024" },
     { "degree": "Architecture Certificate – PARIN Program (Architecture-Engineering)", "school": "ENSAG, Grenoble, 01/2023" },

@@ -5,12 +5,118 @@
   const ACTIVE_KEY = 'cv_active_profile';
   const THEME_KEY = 'cv_theme';
   const ACCENT_KEY = 'cv_accent_color';
+  const FONT_KEY = 'cv_font_sizes';
   const DEFAULT_JSON_URL = 'default_cv.json';
+
+  // === Font size config ===
+  const FONT_CONTROLS = [
+    { id: 'fs-name',      label: 'Nom',               var: '--fs-name',         min: 14, max: 32, step: 0.5, def: 22  },
+    { id: 'fs-title',     label: 'Titre / sous-titre', var: '--fs-title',        min: 9,  max: 20, step: 0.5, def: 13  },
+    { id: 'fs-contacts',  label: 'Contacts',           var: '--fs-contacts',     min: 8,  max: 14, step: 0.5, def: 11  },
+    { id: 'fs-tagline',   label: 'Tagline',            var: '--fs-tagline',      min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-sec-title', label: 'Titres de section',  var: '--fs-section-title',min: 8,  max: 15, step: 0.5, def: 11  },
+    { id: 'fs-skills',    label: 'Compétences (tags)', var: '--fs-skills',       min: 8,  max: 15, step: 0.5, def: 11  },
+    { id: 'fs-lang',      label: 'Langues',            var: '--fs-lang',         min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-projects',  label: 'Projets',            var: '--fs-projects',     min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-interests', label: 'Intérêts',           var: '--fs-interests',    min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-exp-role',  label: 'Poste (rôle)',       var: '--fs-exp-role',     min: 9,  max: 18, step: 0.5, def: 13  },
+    { id: 'fs-exp-org',   label: 'Entreprise / org.',  var: '--fs-exp-org',      min: 8,  max: 16, step: 0.5, def: 12  },
+    { id: 'fs-exp-bullets',label:'Bullets expérience', var: '--fs-exp-bullets',  min: 8,  max: 15, step: 0.5, def: 12  },
+    { id: 'fs-edu',       label: 'Études',             var: '--fs-edu',          min: 8,  max: 16, step: 0.5, def: 12.5},
+  ];
+
+  let fontSizes = {};
+
+  function loadFontSizes() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(FONT_KEY));
+      if (saved) fontSizes = saved;
+    } catch(e) {}
+    FONT_CONTROLS.forEach(ctrl => {
+      if (fontSizes[ctrl.id] === undefined) fontSizes[ctrl.id] = ctrl.def;
+    });
+    applyFontSizes();
+  }
+
+  function applyFontSizes() {
+    FONT_CONTROLS.forEach(ctrl => {
+      const val = fontSizes[ctrl.id] ?? ctrl.def;
+      document.documentElement.style.setProperty(ctrl.var, val + 'px');
+    });
+  }
+
+  function saveFontSizes() {
+    localStorage.setItem(FONT_KEY, JSON.stringify(fontSizes));
+  }
+
+  function resetFontSizes() {
+    FONT_CONTROLS.forEach(ctrl => fontSizes[ctrl.id] = ctrl.def);
+    applyFontSizes();
+    saveFontSizes();
+    refreshSliders();
+  }
+
+  function refreshSliders() {
+    FONT_CONTROLS.forEach(ctrl => {
+      const input = document.getElementById('slider-' + ctrl.id);
+      const valEl = document.getElementById('val-' + ctrl.id);
+      if (input) input.value = fontSizes[ctrl.id] ?? ctrl.def;
+      if (valEl) valEl.textContent = (fontSizes[ctrl.id] ?? ctrl.def) + 'px';
+    });
+  }
+
+  function buildFontPanel() {
+    const panel = document.getElementById('font-panel');
+    if (!panel) return;
+    panel.innerHTML = '<h3>Taille du texte par zone</h3>';
+    FONT_CONTROLS.forEach(ctrl => {
+      const group = document.createElement('div');
+      group.className = 'font-panel-group';
+      const label = document.createElement('label');
+      label.textContent = ctrl.label;
+      label.htmlFor = 'slider-' + ctrl.id;
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.id = 'slider-' + ctrl.id;
+      input.min = ctrl.min;
+      input.max = ctrl.max;
+      input.step = ctrl.step;
+      input.value = fontSizes[ctrl.id] ?? ctrl.def;
+      const valEl = document.createElement('span');
+      valEl.className = 'fs-val';
+      valEl.id = 'val-' + ctrl.id;
+      valEl.textContent = (fontSizes[ctrl.id] ?? ctrl.def) + 'px';
+      input.addEventListener('input', () => {
+        fontSizes[ctrl.id] = parseFloat(input.value);
+        valEl.textContent = input.value + 'px';
+        applyFontSizes();
+        saveFontSizes();
+      });
+      group.appendChild(label);
+      group.appendChild(input);
+      group.appendChild(valEl);
+      panel.appendChild(group);
+    });
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'font-panel-reset';
+    resetBtn.textContent = '↺ Réinitialiser';
+    resetBtn.addEventListener('click', resetFontSizes);
+    panel.appendChild(resetBtn);
+  }
+
+  function toggleFontPanel() {
+    const panel = document.getElementById('font-panel');
+    if (!panel) return;
+    const isOpen = panel.classList.toggle('open');
+    const btn = document.getElementById('font-btn');
+    if (btn) btn.classList.toggle('tb-btn--active', isOpen);
+  }
+
+  // ======================================================
 
   let dragMode = false, dragSrc = null;
   let cvData = {};
 
-  // --- Gestion des profils ---
   function getProfiles() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; } }
   function saveProfiles(p) { localStorage.setItem(STORE_KEY, JSON.stringify(p)); }
   function getActiveName() { return localStorage.getItem(ACTIVE_KEY) || 'Défaut'; }
@@ -25,7 +131,7 @@
       contacts: Array.from(contactSpans).map(span => span.textContent.trim())
     };
     return {
-      infos: infos,
+      infos,
       tagline: cvData.tagline,
       sectionTitles: cvData.sectionTitles,
       experiences: cvData.experiences,
@@ -33,28 +139,21 @@
       langues: cvData.langues,
       projets: cvData.projets,
       interets: cvData.interets,
-      liens: cvData.liens,
       etudes: cvData.etudes
     };
   }
 
   function applyState(state) {
     if (!state) return;
-    // Initialisation des titres par défaut (français)
     if (!cvData.sectionTitles) {
       cvData.sectionTitles = {
-        skills: "COMPÉTENCES TECHNIQUES",
-        languages: "LANGUES",
+        skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES",
         projects: "PROJETS PERSONNELS",
-        links: "LIENS & PORTFOLIO",
-        interests: "INTÉRÊTS / ASSOCIATIF",
-        experience: "EXPÉRIENCE PROFESSIONNELLE",
+        interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE",
         education: "ÉTUDES"
       };
     }
-    if (state.sectionTitles) {
-      Object.assign(cvData.sectionTitles, state.sectionTitles);
-    }
+    if (state.sectionTitles) Object.assign(cvData.sectionTitles, state.sectionTitles);
     if (state.infos) {
       const nameEl = document.querySelector('.cv-name');
       const titleEl = document.querySelector('.cv-title');
@@ -73,7 +172,6 @@
     cvData.langues = state.langues || [];
     cvData.projets = state.projets || [];
     cvData.interets = state.interets || '';
-    cvData.liens = state.liens || [];
     cvData.etudes = state.etudes || [];
     renderAll();
   }
@@ -126,24 +224,20 @@
     sel.innerHTML = '';
     Object.keys(profiles).forEach(name => {
       let opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
+      opt.value = name; opt.textContent = name;
       if (name === active) opt.selected = true;
       sel.appendChild(opt);
     });
   }
 
-  // --- Rendu principal ---
+  // === Render ===
   function renderAll() {
     renderSidebar();
     renderMain();
     const taglineDiv = document.getElementById('tagline-display');
     if (taglineDiv) {
       taglineDiv.textContent = cvData.tagline;
-      taglineDiv.addEventListener('blur', () => {
-        cvData.tagline = taglineDiv.textContent;
-        saveCurrentProfile();
-      });
+      taglineDiv.addEventListener('blur', () => { cvData.tagline = taglineDiv.textContent; saveCurrentProfile(); });
     }
     const nameEl = document.querySelector('.cv-name');
     const titleEl = document.querySelector('.cv-title');
@@ -158,7 +252,6 @@
     if (!sidebar) return;
     sidebar.innerHTML = '';
 
-    // Compétences
     addSectionTitle(sidebar, cvData.sectionTitles.skills, 'skills');
     const skillsDiv = document.createElement('div');
     skillsDiv.className = 'cv-tags';
@@ -175,7 +268,6 @@
     addSkillBtn.onclick = () => { let ns = prompt('Nouvelle compétence:'); if(ns) { cvData.competences.push(ns); renderAll(); saveCurrentProfile(); } };
     sidebar.appendChild(addSkillBtn);
 
-    // Langues
     addSectionTitle(sidebar, cvData.sectionTitles.languages, 'languages');
     cvData.langues.forEach((lang, idx) => {
       const div = document.createElement('div');
@@ -184,16 +276,12 @@
       nomSpan.className = 'lang-name';
       nomSpan.contentEditable = 'true';
       nomSpan.textContent = lang.nom;
-      nomSpan.addEventListener('blur', () => {
-        cvData.langues[idx].nom = nomSpan.textContent;
-        saveCurrentProfile();
-      });
+      nomSpan.addEventListener('blur', () => { cvData.langues[idx].nom = nomSpan.textContent; saveCurrentProfile(); });
       const select = document.createElement('select');
       select.className = 'lang-level-select';
       ['A1','A2','B1','B2','C1','C2'].forEach(n => {
         const opt = document.createElement('option');
-        opt.value = n;
-        opt.textContent = n;
+        opt.value = n; opt.textContent = n;
         if (lang.niveau === n) opt.selected = true;
         select.appendChild(opt);
       });
@@ -206,22 +294,16 @@
       niveauSpan.className = 'lang-level-text';
       niveauSpan.textContent = lang.niveau;
       const delBtn = document.createElement('button');
-      delBtn.textContent = '🗑️';
-      delBtn.className = 'delete-item-btn';
+      delBtn.textContent = '🗑️'; delBtn.className = 'delete-item-btn';
       delBtn.onclick = () => { cvData.langues.splice(idx,1); renderAll(); saveCurrentProfile(); };
-      div.appendChild(nomSpan);
-      div.appendChild(select);
-      div.appendChild(niveauSpan);
-      div.appendChild(delBtn);
+      div.appendChild(nomSpan); div.appendChild(select); div.appendChild(niveauSpan); div.appendChild(delBtn);
       sidebar.appendChild(div);
     });
     const addLangBtn = document.createElement('button');
-    addLangBtn.textContent = '+ Ajouter langue';
-    addLangBtn.className = 'icon-btn';
+    addLangBtn.textContent = '+ Ajouter langue'; addLangBtn.className = 'icon-btn';
     addLangBtn.onclick = () => { let nom = prompt('Nom:'); if(nom) { cvData.langues.push({ nom, niveau: 'B1' }); renderAll(); saveCurrentProfile(); } };
     sidebar.appendChild(addLangBtn);
 
-    // Projets
     addSectionTitle(sidebar, cvData.sectionTitles.projects, 'projects');
     cvData.projets.forEach((proj, idx) => {
       const div = document.createElement('div');
@@ -240,69 +322,29 @@
       sidebar.appendChild(div);
     });
     const addProjBtn = document.createElement('button');
-    addProjBtn.textContent = '+ Ajouter projet';
-    addProjBtn.className = 'icon-btn';
+    addProjBtn.textContent = '+ Ajouter projet'; addProjBtn.className = 'icon-btn';
     addProjBtn.onclick = () => {
       let nom = prompt('Nom:'); if(!nom) return;
       let desc = prompt('Description:'); if(!desc) return;
-      cvData.projets.push({ nom, desc });
-      renderAll(); saveCurrentProfile();
+      cvData.projets.push({ nom, desc }); renderAll(); saveCurrentProfile();
     };
     sidebar.appendChild(addProjBtn);
 
-    // Liens & portfolio
     addSectionTitle(sidebar, cvData.sectionTitles.links, 'links');
-    cvData.liens.forEach((link, idx) => {
-      const div = document.createElement('div');
-      div.className = 'cv-link-item';
-      div.innerHTML = `
-        <div>
-          <span class="cv-link-name" contenteditable="true">${link.icone || '🔗'} ${escapeHtml(link.nom)}</span><br>
-          <span class="cv-link-url" contenteditable="true">${escapeHtml(link.url)}</span>
-        </div>
-        <button class="delete-item-btn" data-type="lien" data-index="${idx}">🗑️</button>
-      `;
-      const nameSpan = div.querySelector('.cv-link-name');
-      const urlSpan = div.querySelector('.cv-link-url');
-      nameSpan.addEventListener('blur', () => {
-        let newName = nameSpan.textContent.replace(/^[🔗🐙]\s*/, '');
-        cvData.liens[idx].nom = newName;
-        saveCurrentProfile();
-      });
-      urlSpan.addEventListener('blur', () => { cvData.liens[idx].url = urlSpan.textContent; saveCurrentProfile(); });
-      sidebar.appendChild(div);
-    });
-    const addLinkBtn = document.createElement('button');
-    addLinkBtn.textContent = '+ Ajouter lien';
-    addLinkBtn.className = 'icon-btn';
-    addLinkBtn.onclick = () => {
-      let nom = prompt('Nom:'); if(!nom) return;
-      let url = prompt('URL:'); if(!url) return;
-      cvData.liens.push({ nom, url, icone: '🔗' });
-      renderAll(); saveCurrentProfile();
-    };
-    sidebar.appendChild(addLinkBtn);
 
-    // Intérêts
     addSectionTitle(sidebar, cvData.sectionTitles.interests, 'interests');
     const interestDiv = document.createElement('div');
-    interestDiv.className = 'cv-interest';
-    interestDiv.contentEditable = 'true';
+    interestDiv.className = 'cv-interest'; interestDiv.contentEditable = 'true';
     interestDiv.textContent = cvData.interets;
     interestDiv.addEventListener('blur', () => { cvData.interets = interestDiv.textContent; saveCurrentProfile(); });
     sidebar.appendChild(interestDiv);
 
-    // Suppression des éléments (compétences, projets, liens)
     sidebar.querySelectorAll('.delete-item-btn[data-type]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        let type = btn.dataset.type;
-        let idx = parseInt(btn.dataset.index);
+        let type = btn.dataset.type; let idx = parseInt(btn.dataset.index);
         if (type === 'skill') cvData.competences.splice(idx,1);
         if (type === 'projet') cvData.projets.splice(idx,1);
-        if (type === 'lien') cvData.liens.splice(idx,1);
-        renderAll();
-        saveCurrentProfile();
-        e.stopPropagation();
+        renderAll(); saveCurrentProfile(); e.stopPropagation();
       });
     });
   }
@@ -312,20 +354,15 @@
     if (!main) return;
     main.innerHTML = '';
 
-    // Expérience professionnelle
     const expTitle = document.createElement('div');
     expTitle.className = 'cv-section-title';
     expTitle.innerHTML = `<span contenteditable="true">${escapeHtml(cvData.sectionTitles.experience)}</span><div class="section-actions"><button class="icon-btn" id="add-exp-btn">➕ Ajouter</button></div>`;
     const expSpan = expTitle.querySelector('span');
-    expSpan.addEventListener('blur', () => {
-      cvData.sectionTitles.experience = expSpan.textContent;
-      saveCurrentProfile();
-    });
+    expSpan.addEventListener('blur', () => { cvData.sectionTitles.experience = expSpan.textContent; saveCurrentProfile(); });
     main.appendChild(expTitle);
 
     const expList = document.createElement('div');
-    expList.id = 'exp-list';
-    expList.className = 'cv-exp-list';
+    expList.id = 'exp-list'; expList.className = 'cv-exp-list';
     cvData.experiences.forEach((exp, idx) => {
       const item = document.createElement('div');
       item.className = 'cv-exp-item';
@@ -366,27 +403,19 @@
     });
     expList.querySelectorAll('.delete-item-btn[data-exp-idx]').forEach(btn => {
       btn.addEventListener('click', () => {
-        let idx = parseInt(btn.dataset.expIdx);
-        cvData.experiences.splice(idx,1);
-        renderAll();
-        saveCurrentProfile();
+        let idx = parseInt(btn.dataset.expIdx); cvData.experiences.splice(idx,1); renderAll(); saveCurrentProfile();
       });
     });
     document.getElementById('add-exp-btn')?.addEventListener('click', () => {
       cvData.experiences.push({ id: Date.now().toString(), role: "Nouveau poste", org: "Entreprise", date: "MM/AAAA", bullets: ["Nouvelle réalisation"] });
-      renderAll();
-      saveCurrentProfile();
+      renderAll(); saveCurrentProfile();
     });
 
-    // Études
     const eduTitle = document.createElement('div');
     eduTitle.className = 'cv-section-title';
     eduTitle.innerHTML = `<span contenteditable="true">${escapeHtml(cvData.sectionTitles.education)}</span><div class="section-actions"><button class="icon-btn" id="add-edu-btn">➕ Ajouter</button></div>`;
     const eduSpan = eduTitle.querySelector('span');
-    eduSpan.addEventListener('blur', () => {
-      cvData.sectionTitles.education = eduSpan.textContent;
-      saveCurrentProfile();
-    });
+    eduSpan.addEventListener('blur', () => { cvData.sectionTitles.education = eduSpan.textContent; saveCurrentProfile(); });
     main.appendChild(eduTitle);
 
     const eduContainer = document.createElement('div');
@@ -409,16 +438,11 @@
     });
     eduContainer.querySelectorAll('.delete-item-btn[data-edu-idx]').forEach(btn => {
       btn.addEventListener('click', () => {
-        let idx = parseInt(btn.dataset.eduIdx);
-        cvData.etudes.splice(idx,1);
-        renderAll();
-        saveCurrentProfile();
+        let idx = parseInt(btn.dataset.eduIdx); cvData.etudes.splice(idx,1); renderAll(); saveCurrentProfile();
       });
     });
     document.getElementById('add-edu-btn')?.addEventListener('click', () => {
-      cvData.etudes.push({ degree: "Nouveau diplôme", school: "Établissement, année" });
-      renderAll();
-      saveCurrentProfile();
+      cvData.etudes.push({ degree: "Nouveau diplôme", school: "Établissement, année" }); renderAll(); saveCurrentProfile();
     });
   }
 
@@ -441,17 +465,12 @@
     }));
   }
 
-  // Ajoute un titre de section éditable
   function addSectionTitle(parent, title, storageKey) {
     const div = document.createElement('div');
     div.className = 'cv-section-title';
     const span = document.createElement('span');
-    span.contentEditable = 'true';
-    span.textContent = title;
-    span.addEventListener('blur', () => {
-      if (storageKey) cvData.sectionTitles[storageKey] = span.textContent;
-      saveCurrentProfile();
-    });
+    span.contentEditable = 'true'; span.textContent = title;
+    span.addEventListener('blur', () => { if (storageKey) cvData.sectionTitles[storageKey] = span.textContent; saveCurrentProfile(); });
     div.appendChild(span);
     parent.appendChild(div);
   }
@@ -466,31 +485,22 @@
     });
   }
 
-  // --- Drag & Drop ---
+  // === Drag & Drop ===
   function toggleDrag() {
     dragMode = !dragMode;
     const btn = document.getElementById('drag-btn');
-    if (btn) {
-      btn.classList.toggle('tb-btn--active', dragMode);
-      btn.textContent = dragMode ? '✕ Terminer' : '⠿ Réordonner';
-    }
+    if (btn) { btn.classList.toggle('tb-btn--active', dragMode); btn.textContent = dragMode ? '✕ Terminer' : '⠿ Réordonner'; }
     const items = document.querySelectorAll('#exp-list .cv-exp-item');
     items.forEach(item => {
       if (dragMode) {
-        item.draggable = true;
-        item.classList.add('draggable');
-        item.addEventListener('dragstart', onDragStart);
-        item.addEventListener('dragover', onDragOver);
-        item.addEventListener('dragleave', onDragLeave);
-        item.addEventListener('drop', onDrop);
+        item.draggable = true; item.classList.add('draggable');
+        item.addEventListener('dragstart', onDragStart); item.addEventListener('dragover', onDragOver);
+        item.addEventListener('dragleave', onDragLeave); item.addEventListener('drop', onDrop);
         item.addEventListener('dragend', onDragEnd);
       } else {
-        item.draggable = false;
-        item.classList.remove('draggable', 'drag-over');
-        item.removeEventListener('dragstart', onDragStart);
-        item.removeEventListener('dragover', onDragOver);
-        item.removeEventListener('dragleave', onDragLeave);
-        item.removeEventListener('drop', onDrop);
+        item.draggable = false; item.classList.remove('draggable', 'drag-over');
+        item.removeEventListener('dragstart', onDragStart); item.removeEventListener('dragover', onDragOver);
+        item.removeEventListener('dragleave', onDragLeave); item.removeEventListener('drop', onDrop);
         item.removeEventListener('dragend', onDragEnd);
       }
     });
@@ -500,21 +510,18 @@
   function onDragOver(e) { e.preventDefault(); if (this !== dragSrc) this.classList.add('drag-over'); }
   function onDragLeave() { this.classList.remove('drag-over'); }
   function onDrop(e) {
-    e.preventDefault();
-    if (this === dragSrc) return;
+    e.preventDefault(); if (this === dragSrc) return;
     this.classList.remove('drag-over');
     const list = document.getElementById('exp-list');
     const items = Array.from(list.querySelectorAll('.cv-exp-item'));
-    const si = items.indexOf(dragSrc);
-    const di = items.indexOf(this);
+    const si = items.indexOf(dragSrc), di = items.indexOf(this);
     if (si < di) list.insertBefore(dragSrc, this.nextSibling);
     else list.insertBefore(dragSrc, this);
-    syncExperiencesFromDOM();
-    saveCurrentProfile();
+    syncExperiencesFromDOM(); saveCurrentProfile();
   }
   function onDragEnd() { this.classList.remove('dragging'); document.querySelectorAll('.cv-exp-item').forEach(i => i.classList.remove('drag-over')); }
 
-  // --- Thème, couleur ---
+  // === Theme & Accent ===
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     const btn = document.getElementById('theme-btn');
@@ -526,12 +533,9 @@
   function lightenColor(col, amt) {
     let hex = col.replace('#', '');
     let num = parseInt(hex, 16);
-    let r = (num >> 16) + amt;
-    let g = ((num >> 8) & 0x00FF) + amt;
-    let b = (num & 0x0000FF) + amt;
-    r = Math.min(255, Math.max(0, r));
-    g = Math.min(255, Math.max(0, g));
-    b = Math.min(255, Math.max(0, b));
+    let r = Math.min(255, Math.max(0, (num >> 16) + amt));
+    let g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amt));
+    let b = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
     return `#${(0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1)}`;
   }
 
@@ -549,85 +553,41 @@
   function initAccentPicker() {
     const picker = document.getElementById('accent-color-picker');
     if (!picker) return;
-    let savedColor = localStorage.getItem(ACCENT_KEY);
-    if (!savedColor) {
-      savedColor = '#2D5A3D';
-      localStorage.setItem(ACCENT_KEY, savedColor);
-    }
+    let savedColor = localStorage.getItem(ACCENT_KEY) || '#2D5A3D';
     picker.value = savedColor;
     applyAccentColor(savedColor);
-    picker.addEventListener('input', (e) => {
-      applyAccentColor(e.target.value);
-      localStorage.setItem(ACCENT_KEY, e.target.value);
-    });
+    picker.addEventListener('input', (e) => { applyAccentColor(e.target.value); localStorage.setItem(ACCENT_KEY, e.target.value); });
   }
 
-  // --- Impression avec ajustement automatique ---
-  function fitToPage() {
-    const root = document.querySelector('.cv-root');
-    if (!root) return;
-    if (!root.dataset.originalFontSize) {
-      root.dataset.originalFontSize = getComputedStyle(root).fontSize;
-    }
-    setTimeout(() => {
-      const maxHeight = 950;
-      let currentHeight = root.scrollHeight;
-      if (currentHeight <= maxHeight) return;
-      let factor = maxHeight / currentHeight;
-      factor = Math.min(0.95, Math.max(0.6, factor));
-      root.style.fontSize = `calc(${factor} * 1em)`;
-      window._printFontFactor = factor;
-    }, 30);
-  }
-
-  function resetPrintScale() {
-    const root = document.querySelector('.cv-root');
-    if (root && root.dataset.originalFontSize) {
-      root.style.fontSize = '';
-      delete window._printFontFactor;
-    }
-  }
-
+  // === PDF Print ===
   function downloadPDF() {
     if (dragMode) toggleDrag();
-    fitToPage();
-    setTimeout(() => {
-      window.print();
-      window.addEventListener('afterprint', () => resetPrintScale(), { once: true });
-      setTimeout(resetPrintScale, 2000);
-    }, 200);
+    // Close font panel if open
+    const panel = document.getElementById('font-panel');
+    if (panel) panel.classList.remove('open');
+    setTimeout(() => { window.print(); }, 100);
   }
 
-  // --- Import / Export ---
+  // === Import / Export ===
   function exportProfile() {
-    let name = getActiveName();
-    let data = captureState();
+    let name = getActiveName(); let data = captureState();
     let blob = new Blob([JSON.stringify({ name, ...data }, null, 2)], {type: 'application/json'});
-    let a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `cv_${name}.json`;
-    a.click();
-    URL.revokeObjectURL(blob);
+    let a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `cv_${name}.json`; a.click(); URL.revokeObjectURL(blob);
   }
 
   function importProfile() {
-    let input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
+    let input = document.createElement('input'); input.type = 'file'; input.accept = 'application/json';
     input.onchange = e => {
-      let file = e.target.files[0];
-      if (!file) return;
+      let file = e.target.files[0]; if (!file) return;
       let reader = new FileReader();
       reader.onload = ev => {
         try {
           let imported = JSON.parse(ev.target.result);
           let newName = imported.name || prompt('Nom du nouveau profil:', 'Importé');
           if (!newName) return;
-          let profiles = getProfiles();
-          profiles[newName] = imported;
-          saveProfiles(profiles);
-          loadProfile(newName);
-          showToast('Profil importé');
+          let profiles = getProfiles(); profiles[newName] = imported;
+          saveProfiles(profiles); loadProfile(newName); showToast('Profil importé');
         } catch(err) { showToast('Erreur JSON'); }
       };
       reader.readAsText(file);
@@ -638,67 +598,33 @@
   function showToast(msg) {
     let t = document.getElementById('cv-toast');
     if (!t) {
-      t = document.createElement('div');
-      t.id = 'cv-toast';
+      t = document.createElement('div'); t.id = 'cv-toast';
       t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#2D5A3D;color:#fff;font-size:12px;padding:8px 16px;border-radius:4px;opacity:0;transition:opacity 0.25s;z-index:9999;pointer-events:none;';
       document.body.appendChild(t);
     }
-    t.textContent = msg;
-    t.style.opacity = '1';
-    clearTimeout(t._t);
-    t._t = setTimeout(() => t.style.opacity = '0', 2800);
+    t.textContent = msg; t.style.opacity = '1';
+    clearTimeout(t._t); t._t = setTimeout(() => t.style.opacity = '0', 2800);
   }
 
-  // --- Chargement du JSON par défaut ---
+  // === Default JSON ===
   async function loadDefaultJSON() {
     try {
       const response = await fetch(DEFAULT_JSON_URL);
       if (!response.ok) throw new Error();
       const defaultData = await response.json();
       if (!defaultData.infos) {
-        defaultData.infos = {
-          name: "Quentin Samudio",
-          title: "Ingénieur Chercheur — Modélisation énergétique",
-          contacts: ["quentin.samudio@yahoo.fr", "07 62 60 01 63", "Paris / Montreuil", "github.com/QuentinSamudioMines"]
-        };
+        defaultData.infos = { name: "Quentin Samudio", title: "Ingénieur Chercheur — Modélisation énergétique", contacts: ["quentin.samudio@yahoo.fr","07 62 60 01 63","Paris / Montreuil","github.com/QuentinSamudioMines"] };
       }
       if (!defaultData.sectionTitles) {
-        defaultData.sectionTitles = {
-          skills: "COMPÉTENCES TECHNIQUES",
-          languages: "LANGUES",
-          projects: "PROJETS PERSONNELS",
-          links: "LIENS & PORTFOLIO",
-          interests: "INTÉRÊTS / ASSOCIATIF",
-          experience: "EXPÉRIENCE PROFESSIONNELLE",
-          education: "ÉTUDES"
-        };
+        defaultData.sectionTitles = { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" };
       }
       return defaultData;
     } catch (err) {
-      console.warn('Fichier default_cv.json non trouvé, utilisation données intégrées');
       return {
-        infos: {
-          name: "Quentin Samudio",
-          title: "Ingénieur Chercheur — Modélisation énergétique",
-          contacts: ["quentin.samudio@yahoo.fr", "07 62 60 01 63", "Paris / Montreuil", "github.com/QuentinSamudioMines"]
-        },
+        infos: { name: "Quentin Samudio", title: "Ingénieur Chercheur — Modélisation énergétique", contacts: ["quentin.samudio@yahoo.fr","07 62 60 01 63","Paris / Montreuil","github.com/QuentinSamudioMines"] },
         tagline: "Ingénieur-chercheur spécialisé dans la modélisation énergétique.",
-        sectionTitles: {
-          skills: "COMPÉTENCES TECHNIQUES",
-          languages: "LANGUES",
-          projects: "PROJETS PERSONNELS",
-          links: "LIENS & PORTFOLIO",
-          interests: "INTÉRÊTS / ASSOCIATIF",
-          experience: "EXPÉRIENCE PROFESSIONNELLE",
-          education: "ÉTUDES"
-        },
-        experiences: [],
-        competences: ["Python", "HTML", "CSS"],
-        langues: [{ nom: "Anglais", niveau: "C1" }],
-        projets: [],
-        interets: "",
-        liens: [],
-        etudes: []
+        sectionTitles: { skills: "COMPÉTENCES TECHNIQUES", languages: "LANGUES", projects: "PROJETS PERSONNELS", interests: "INTÉRÊTS / ASSOCIATIF", experience: "EXPÉRIENCE PROFESSIONNELLE", education: "ÉTUDES" },
+        experiences: [], competences: ["Python","HTML","CSS"], langues: [{ nom: "Anglais", niveau: "C1" }], projets: [], interets: [], etudes: []
       };
     }
   }
@@ -706,16 +632,25 @@
   async function init() {
     const defaultData = await loadDefaultJSON();
     let profiles = getProfiles();
-    if (Object.keys(profiles).length === 0) {
-      profiles['Défaut'] = defaultData;
-      saveProfiles(profiles);
-    }
+    if (Object.keys(profiles).length === 0) { profiles['Défaut'] = defaultData; saveProfiles(profiles); }
     renderSelect();
     loadProfile(getActiveName());
     initAccentPicker();
+    loadFontSizes();
+    buildFontPanel();
     const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
     applyTheme(savedTheme);
     bindEvents();
+
+    // Close font panel on outside click
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('font-panel');
+      const btn = document.getElementById('font-btn');
+      if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
+        panel.classList.remove('open');
+        btn.classList.remove('tb-btn--active');
+      }
+    });
   }
 
   function bindEvents() {
@@ -727,6 +662,7 @@
     document.getElementById('theme-btn')?.addEventListener('click', toggleTheme);
     document.getElementById('pdf-btn')?.addEventListener('click', downloadPDF);
     document.getElementById('drag-btn')?.addEventListener('click', toggleDrag);
+    document.getElementById('font-btn')?.addEventListener('click', (e) => { e.stopPropagation(); toggleFontPanel(); });
     document.getElementById('profile-select')?.addEventListener('change', (e) => loadProfile(e.target.value));
     document.addEventListener('keydown', (e) => { if((e.ctrlKey||e.metaKey) && e.key==='s') { e.preventDefault(); saveCurrentProfile(); } });
   }
