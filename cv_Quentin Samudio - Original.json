@@ -5,12 +5,12 @@
     "title": "Ingénieur Chercheur — Modélisation énergétique",
     "contacts": [
       "quentin.samudio@yahoo.fr",
-      "07 62 60 01 63",
+      "00 00 00 00 00",
       "Paris / Montreuil",
       "github.com/QuentinSamudioMines"
     ]
   },
-  "tagline": "Ingénieur-chercheur spécialisé dans la modélisation des systèmes électriques et l'analyse de la transition énergétique. Expérience en modélisation à grande échelle, systèmes énergétiques urbains et autoconsommation collective. Solide background Python et contributeur à des projets de recherche appliquée sur les trajectoires bas carbone.",
+  "tagline": "Ingénieur-chercheur spécialisé en modélisation et optimisation des systèmes électriques. Travaille sur des modèles à grande échelle de systèmes énergétiques urbains et d’autoconsommation collective. Forte maîtrise de Python et contribution à des projets de recherche appliquée sur les trajectoires bas carbone.",
   "sectionTitles": {
     "skills": "COMPÉTENCES TECHNIQUES",
     "languages": "LANGUES",
@@ -132,12 +132,11 @@
     }
   ],
   "hiddenSections": {
-    "links": true,
-    "interests": false
+    "links": true
   },
   "fontSizes": {
-    "fs-name": 26,
-    "fs-title": 19,
+    "fs-name": 30,
+    "fs-title": 18,
     "fs-contacts": 13,
     "fs-tagline": 15,
     "fs-sec-title": 15,
@@ -145,9 +144,9 @@
     "fs-lang": 14,
     "fs-projects": 13,
     "fs-interests": 13,
-    "fs-exp-role": 15,
-    "fs-exp-org": 14,
+    "fs-exp-role": 16.5,
+    "fs-exp-org": 13,
     "fs-exp-bullets": 13,
-    "fs-edu": 14
+    "fs-edu": 13
   }
 }

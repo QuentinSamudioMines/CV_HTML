@@ -5,20 +5,20 @@
     "title": "Research Engineer — Energy Modelling",
     "contacts": [
       "quentin.samudio@yahoo.fr",
-      "+33 7 62 60 01 63",
+      "00 00 00 00 00",
       "Paris / Montreuil, France",
       "github.com/QuentinSamudioMines"
     ]
   },
   "tagline": "Research engineer specialised in power system modelling and energy transition analysis. Experience in large-scale modelling, urban energy systems, and collective self-consumption. Strong Python background and contributor to applied research projects on low-carbon pathways.",
   "sectionTitles": {
-    "skills": "TECHNICAL SKILLS",
-    "languages": "LANGUAGES",
-    "projects": "PERSONAL PROJECTS",
-    "links": "LINKS & PORTFOLIO",
-    "interests": "INTERESTS / VOLUNTEERING",
-    "experience": "PROFESSIONAL EXPERIENCE",
-    "education": "EDUCATION"
+    "skills": "COMPÉTENCES TECHNIQUES",
+    "languages": "LANGUES",
+    "projects": "PROJETS PERSONNELS",
+    "links": "LIENS & PORTFOLIO",
+    "interests": "INTÉRÊTS / ASSOCIATIF",
+    "experience": "EXPÉRIENCE PROFESSIONNELLE",
+    "education": "ÉTUDES"
   },
   "experiences": [
     {
@@ -111,7 +111,7 @@
       "desc": "Fully editable online CV: inline editing, multi‑profile (localStorage/JSON), light/dark theme, accent color picker, drag & drop, PDF auto‑scaling."
     }
   ],
-  "interets": "- Krav Maga – 4 years - President, ACE (Energy Design Area) 2022–2023 - Treasurer, T4EG (Together For Earth Grenoble) 2022–2023",
+  "interets": "- Krav Maga – 4 years - President, ACE (Energy Design Area) 2022–2023 - Treasurer, T4EG (Together For Earth Grenoble) 2022–2023",
   "liens": [
     {
       "nom": "LinkedIn",
@@ -146,18 +146,18 @@
     "links": true
   },
   "fontSizes": {
-    "fs-name": 25,
-    "fs-title": 19,
-    "fs-contacts": 13,
+    "fs-name": 30,
+    "fs-title": 18,
+    "fs-contacts": 12,
     "fs-tagline": 15,
     "fs-sec-title": 15,
     "fs-skills": 13,
     "fs-lang": 14,
     "fs-projects": 13,
     "fs-interests": 13,
-    "fs-exp-role": 15,
-    "fs-exp-org": 14,
+    "fs-exp-role": 16.5,
+    "fs-exp-org": 13,
     "fs-exp-bullets": 13,
-    "fs-edu": 14
+    "fs-edu": 13
   }
 }
